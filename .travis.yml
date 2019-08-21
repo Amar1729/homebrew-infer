@@ -1,0 +1,37 @@
+os: osx
+
+env:
+    - HOMEBREW_NO_INSTALL_CLEANUP=1
+
+cache:
+    directories:
+        - $HOME/Library/Caches/Homebrew
+        - /usr/local/Cellar
+        - /usr/local/Homebrew
+
+addons:
+    homebrew:
+        update: true
+
+jobs:
+    include:
+        - stage: install
+          name: "Initialize opam"
+          script:
+              - export OPAMROOT=$HOME/Library/Caches/opam
+              - export OPAMYES=1
+              - brew install opam ocaml
+              - opam init --no-setup --bare --disable-sandboxing
+              - opam switch create 4.07.1+flambda
+        - stage: install
+          name: "Build Facebook Clang"
+          script:
+            - brew install --only-dependencies fb-clang.rb
+            - brew install --verbose --build-bottle fb-clang.rb
+            - brew bottle fb-clang.rb
+        - stage: install
+          name: "Build Infer"
+          script:
+            - brew install --only-dependencies infer.rb
+            - brew install --verbose --build-bottle infer.rb
+            - brew bottle infer.rb
