@@ -53,8 +53,8 @@ class FbClang < Formula
     ENV["OPAMROOT"] = opamroot
     ENV["OPAMYES"] = "1"
 
-    system "opam", "init", "--bare", "--no-setup", "--disable-sandboxing"
-	system "opam", "switch", "create", "4.07.1+flambda"
+    #system "opam", "init", "--bare", "--no-setup", "--disable-sandboxing"
+	#system "opam", "switch", "create", "4.07.1+flambda"
     system "opam", "install", "ctypes"
     system "opam", "install", "ounit"
 
