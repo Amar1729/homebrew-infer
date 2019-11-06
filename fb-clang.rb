@@ -1,10 +1,15 @@
 class FbClang < Formula
   desc "facebook clang plugins"
-  version = "7.0.1"
-  tarname = "llvm_clang_compiler-rt_libcxx_libcxxabi_openmp-#{version}"
-  tag = "36266f6c86041896bed32ffec0637fefbc4463e0"
-  url "https://github.com/facebook/facebook-clang-plugins/raw/#{tag}/clang/src/#{tarname}.tar.xz"
-  sha256 "1372c12adfa8347a800adfaf9fbfb9b7748ea0c794df82bfd06f6771c6ae8819"
+  version = "8.0.0"
+  url "https://github.com/facebook/facebook-clang-plugins/raw/dc42763b2e43d19518b6d69554a606bb7eaa0f29/clang/src/llvm_clang_compiler-rt_libcxx_libcxxabi_openmp-#{version}.tar.xz"
+  sha256 "ce840caa36a0fdf7ce1deabc45b34be341ce386d5d710bf4b2f06f3fe5e7f6da"
+  revision 1
+
+  bottle do
+    cellar :any
+	root_url "https://github.com/Amar1729/homebrew-formulae/releases/download/infer-0.17.0_1"
+    sha256 "dab3694fc43ccc1eca62c300cceb12aad0d49c1f937cf2c7c84a03e340ddfff6" => :mojave
+  end
 
   # Clang cannot find system headers if Xcode CLT is not installed
   pour_bottle? do
@@ -15,14 +20,20 @@ class FbClang < Formula
   depends_on "autoconf" => :build
   depends_on "automake" => :build
   depends_on "cmake" => :build
+  depends_on "gmp" => :build
   depends_on "libtool" => :build
+  depends_on "mpfr" => :build
   depends_on "ocaml" => :build
   depends_on "opam" => :build
   depends_on "pkg-config" => :build
+  depends_on "sqlite" => :build
   depends_on :x11 => :build
   depends_on :xcode => :build
 
   keg_only :provided_by_macos, "Conflicts with system clang"
+
+  # use specific tag, though patches change infrequently
+  tag = "dc42763b2e43d19518b6d69554a606bb7eaa0f29"
 
   patch :p2 do
     url "https://github.com/facebook/facebook-clang-plugins/raw/#{tag}/clang/src/err_ret_local_block.patch"
@@ -34,11 +45,6 @@ class FbClang < Formula
     sha256 "7330688109735c68e274edecaabeb5d28d38f58d60bbe4add01827a9af16dbd7"
   end
 
-  resource "attr_dump_cpu_cases_compilation_fix" do
-    url "https://github.com/facebook/facebook-clang-plugins/raw/#{tag}/clang/src/attr_dump_cpu_cases_compilation_fix.patch"
-    sha256 "a559df5f789f4166008cb63f301606f2b5075f4de9e6f22a51615c6d0c8706de"
-  end
-
   def install
     # needed to build clang
     ENV.permit_arch_flags
@@ -46,17 +52,16 @@ class FbClang < Formula
     # Apple's libstdc++ is too old to build LLVM
     ENV.libcxx if ENV.compiler == :clang
 
-    resources.each { |r| r.stage(buildpath) }
+    ENV.prepend_path "PKG_CONFIG_PATH", Formula["sqlite"].opt_lib/"pkgconfig"
 
     # clang doesn't need opam deps after build (?)
-    opamroot = HOMEBREW_CACHE/"opam"
-    ENV["OPAMROOT"] = opamroot
+    ENV["OPAMROOT"] = HOMEBREW_CACHE/"opam"
     ENV["OPAMYES"] = "1"
 
     system "opam", "init", "--bare", "--no-setup", "--disable-sandboxing"
-	system "opam", "switch", "create", "4.07.1+flambda"
-    system "opam", "install", "ctypes"
-    system "opam", "install", "ounit"
+    # check facebook/infer/build-infer.sh for infer_switch to use
+    system "opam", "switch", "create", "ocaml-variants.4.07.1+flambda"
+    system "opam", "install", "ctypes", "ounit"
 
     llvm_args = %W[
       -DCMAKE_C_FLAGS=#{ENV.cflags}
@@ -88,12 +93,8 @@ class FbClang < Formula
       system "opam", "config", "exec", "--", "make", "install"
     end
 
-	cd prefix do
-      system "patch -p1 < #{buildpath}/attr_dump_cpu_cases_compilation_fix.patch"
-    end
-
     system "strip", "-x", *Dir[prefix/"bin/*"]
-    system "strip", "-x", *Dir[prefix/"lib/**/*.dylib"] # is this necessary?
+    system "strip", "-x", *Dir[prefix/"lib/**/*.dylib"]
     system "strip", "-x", *Dir[prefix/"lib/**/*.a"]
   end
 
