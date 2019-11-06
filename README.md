@@ -8,6 +8,6 @@ Currently this formula only provides prebuilt bottles for Mojave, so installing 
 
 ## Installation
 ```bash
-brew tap amar1729/infer
-brew install infer
+# install from this tap explicitly, since Homebrew core provides an older infer:
+brew install amar1729/infer/infer
 ```
