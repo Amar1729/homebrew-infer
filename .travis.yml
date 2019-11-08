@@ -3,8 +3,9 @@ os: osx
 env:
   global:
     - HOMEBREW_NO_INSTALL_CLEANUP=1
-    #- OPAMROOT=$HOME/Library/Caches/Homebrew/opam
-    #- OPAMYES=1
+    - OPAMROOT=$HOME/Library/Caches/Homebrew/opam
+    - OPAMYES=1
+    - OPAMJOBS=2
 
 cache:
   directories:
@@ -14,6 +15,14 @@ cache:
 addons:
   homebrew:
     update: true
+    packages:
+        - opam
+        - ocaml
+
+before_install:
+    - opam init --no-setup --bare --disable-sandboxing
+    - opam switch create 4.07.1+flambda
+    - opam install ctypes ounit
 
 install:
     - brew install --only-dependencies ./Formula/fb-clang.rb
