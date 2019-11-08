@@ -16,6 +16,7 @@ addons:
     update: true
 
 install:
+    - brew install --only-dependencies ./Formula/fb-clang.rb
     - brew install --verbose --build-from-source ./Formula/fb-clang.rb
 
 # jobs:
