@@ -1,0 +1,51 @@
+# File: .azure-ci/jobs/bottles-build.yml
+
+parameters:
+  name: ''
+  displayName: ''
+  vmImage: ''
+  xcode: ''
+
+jobs:
+
+- job: ${{ parameters.name }}
+  displayName: "${{ parameters.displayName }}"
+
+  pool:
+    vmImage: ${{ parameters.vmImage }}
+
+  dependsOn: []
+
+  variables:
+    xcode_version: ${{ parameters.xcode }}
+    os_version: ${{ parameters.vmImage }}
+
+  steps:
+
+    # Setup CI environment
+    - template: /.azure-ci/steps/setup-ci-env.yml
+      parameters:
+        xcode: $(xcode_version)
+
+        # # Checkout PR branch
+        # - template: /.azure-ci/steps/checkout-pr.yml
+
+    # Install your tap
+    - template: /.azure-ci/steps/install-tap.yml
+
+    # hardcoded stuff here, but this could maybe be cleaned up (brew test-bot ?)
+
+    - bash: |
+        brew install --only-dependencies ./Formula/fb-clang.rb
+        brew install --verbose --build-bottle ./Formula/fb-clang.rb
+        brew install --verbose --build-bottle ./Formula/fb-clang.rb
+        brew bottle ./Formula/fb-clang.rb
+      displayName: Build fb-clang
+      name: build_fb_clang
+
+    - bash: |
+        brew install --only-dependencies ./Formula/infer.rb
+        brew install --verbose --build-bottle ./Formula/infer.rb
+        brew bottle ./Formula/infer.rb
+      displayName: Build infer
+      name: build_infer
