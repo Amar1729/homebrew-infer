@@ -36,6 +36,7 @@ jobs:
     # hardcoded stuff here, but this could maybe be cleaned up (brew test-bot ?)
 
     - bash: |
+        brew cask install xquartz
         brew install --only-dependencies ./Formula/fb-clang.rb
         brew install --verbose --build-bottle ./Formula/fb-clang.rb
         brew install --verbose --build-bottle ./Formula/fb-clang.rb
@@ -44,6 +45,7 @@ jobs:
       name: build_fb_clang
 
     - bash: |
+        brew cask install xquartz
         brew install --only-dependencies ./Formula/infer.rb
         brew install --verbose --build-bottle ./Formula/infer.rb
         brew bottle ./Formula/infer.rb
