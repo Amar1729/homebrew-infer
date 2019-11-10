@@ -1,5 +1,6 @@
 class FbClang < Formula
   desc "facebook clang plugins"
+  homepage "https://fbinfer.com/"
   version = "8.0.0"
   url "https://github.com/facebook/facebook-clang-plugins/raw/dc42763b2e43d19518b6d69554a606bb7eaa0f29/clang/src/llvm_clang_compiler-rt_libcxx_libcxxabi_openmp-#{version}.tar.xz"
   sha256 "ce840caa36a0fdf7ce1deabc45b34be341ce386d5d710bf4b2f06f3fe5e7f6da"
@@ -17,6 +18,8 @@ class FbClang < Formula
     satisfy { MacOS::CLT.installed? }
   end
 
+  keg_only "conflicts with system clang"
+
   depends_on "autoconf" => :build
   depends_on "automake" => :build
   depends_on "cmake" => :build
@@ -29,8 +32,6 @@ class FbClang < Formula
   depends_on "sqlite" => :build
   depends_on :x11 => :build
   depends_on :xcode => :build
-
-  keg_only :provided_by_macos, "Conflicts with system clang"
 
   # use specific tag, though patches change infrequently
   tag = "dc42763b2e43d19518b6d69554a606bb7eaa0f29"
@@ -86,7 +87,7 @@ class FbClang < Formula
     ]
 
     mkdir buildpath/"build" do
-      system "mkdir", "-p", "docs/ocamldoc/html"
+      mkdir_p "docs/ocamldoc/html"
 
       system "opam", "config", "exec", "--", "cmake", "-G", "Unix Makefiles", "../", *llvm_args
       system "opam", "config", "exec", "--", "make"
