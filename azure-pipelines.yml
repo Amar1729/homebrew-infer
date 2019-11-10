@@ -18,8 +18,6 @@ variables:
     value: Amar1729
   - name: github_email
     value: amar.paul16@gmail.com
-  - name: github_token
-    value: $(github.token)
   - name: github_tap_repo
     value: homebrew-infer
 
