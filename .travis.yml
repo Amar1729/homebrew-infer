@@ -15,33 +15,10 @@ cache:
 addons:
   homebrew:
     update: true
-    packages:
-        - opam
-        - ocaml
 
-before_install:
-    - opam init --no-setup --bare --disable-sandboxing
-    - opam switch create 4.07.1+flambda
-    - opam install ctypes ounit
-
-install:
-    - brew install --only-dependencies ./Formula/fb-clang.rb
-    - brew install --verbose --build-from-source ./Formula/fb-clang.rb
-
-# jobs:
-#   include:
-#     - stage: cache
-#       name: "Initialize opam and build clang"
-#       script:
-#         - brew install opam ocaml
-#         - opam init --no-setup --bare --disable-sandboxing
-#         - opam switch create 4.07.1+flambda
-#         - brew install --only-dependencies fb-clang.rb
-#         - brew install --verbose --build-bottle fb-clang.rb
-#         - brew bottle fb-clang.rb
-#     - stage: build
-#       name: "Build Infer"
-#       script:
-#         - brew install --only-dependencies infer.rb
-#         - brew install --verbose --build-bottle infer.rb
-#         - brew bottle infer.rb
+jobs:
+    include:
+        - stage: "build"
+          name: "build"
+          script:
+              - brew test-bot ./Formula/fb-clang.rb
