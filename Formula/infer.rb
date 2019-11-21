@@ -84,6 +84,12 @@ class Infer < Formula
     end
   end
 
+  def caveats; <<~EOS
+    The infer formula has been fixed up significantly and updated for newer versions of macOS in homebrew-core.
+    It is highly recommended move back to `brew install infer` from homebrew's main repo; this tap will be deprecated.
+  EOS
+  end
+
   test do
     shell_output("javac -version")
     shell_output("which javac")
