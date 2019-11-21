@@ -4,10 +4,17 @@ A custom tap for [infer](https://github.com/facebook/infer) since the formula re
 
 This formula provides `infer` built with both C/C++ and Java support.
 
-Currently this formula only provides prebuilt bottles for Mojave, so installing on older macOS versions will require building from source.
+This formula currently provides prebuilt bottles for Mojave, and uses Homebrew-core's `bintray` for older infer 0.15.0 bottles.
 
 ## Installation
 ```bash
-# install from this tap explicitly, since Homebrew core provides an older infer:
-brew install amar1729/infer/infer
+# if running at least Mojave:
+$ brew install amar1729/infer/infer
+```
+
+## Older Versions
+```
+# if running Sierra through El Capitan, you can use an older version of infer.
+# this is NOT recommended, since 0.15.0 is quite old; it is purely kept for transitionary period and will be removed from this tap soon.
+$ brew install amar1729/infer/infer@0.15.0
 ```
