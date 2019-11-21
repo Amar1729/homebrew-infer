@@ -1,6 +1,6 @@
 # Infer: Homebrew Tap
 
-A custom tap for [infer](https://github.com/facebook/infer) since the formula requires some odd things to build.
+A custom tap for [infer](https://github.com/facebook/infer) since the formula requires some odd things to build (see [previous attempts for pull requests on core](https://github.com/Homebrew/homebrew-core/pulls?utf8=%E2%9C%93&q=is%3Apr+in%3Atitle+infer)).
 
 This formula provides `infer` built with both C/C++ and Java support.
 
